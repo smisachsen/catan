@@ -9,6 +9,11 @@ from map import Map
 def get_random_map():
     tiles = get_random_tiles()
     cities = get_random_cities(tiles)
+
+    #make lists
+    tiles = list(tiles.values())
+    cities = list(cities.values())
+
     map = Map(cities, tiles)
     return map
 
@@ -33,6 +38,9 @@ def get_random_tiles():
     dice_values = get_dice_values_list()
     resources = get_resource_list()
 
+    assert len(dice_values) == len(resources)
+    assert len(dice_values) == 25
+
     #shuffle them to make a random map
     random.shuffle(dice_values)
     random.shuffle(resources)
@@ -53,12 +61,12 @@ def get_random_tiles():
             if position == 4:
                 dval = 3
             elif position == 41:
-                dval == 11
+                dval = 11
             res = "gold"
-
 
             t = Tile(position, res, dval)
             tiles[position] = t
+
 
     return tiles
 
@@ -70,7 +78,9 @@ def get_dice_values_list():
 
     dice_list = []
     for key in dice_dict:
-        dice_list += [key]*dice_dict[key]
+        dice_list += [int(key)]*dice_dict[key]
+
+    count = {i: dice_list.count(str(i)) for i in range(2, 13)}
 
     return dice_list
 
@@ -81,5 +91,6 @@ def get_resource_list():
     tile_list = []
     for key in tiles_dict:
         tile_list += [key]*tiles_dict[key]
+
 
     return tile_list
