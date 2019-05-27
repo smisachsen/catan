@@ -4,7 +4,7 @@ import json
 from map_generation.filtrate_maps import search_for_maps
 
 N = 1_000
-maps = list(search_for_maps(N = N))
+maps = list(search_for_maps(N = N, output = True))
 
 for i, map in enumerate(maps):
     print("map ", i)

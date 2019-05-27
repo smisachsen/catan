@@ -3,18 +3,19 @@ import numpy as np
 from .generate_map import get_random_map
 
 
-def search_for_maps(N = 10):
+def search_for_maps(N = 10, output = True):
     num_cities_to_check = 15 #num cities to calc mean
     city_prob_mean_treshold = 0.29 #mean of the top cities must be higher than this
     first_tenth_city_prob_diff_treshold = 0.1 #max acceptable probability diff between first and tenth city
     resource_prob_diff_treshold = 0.1 #max acceptable probability diff between the most and least likely resource
 
-    print("-"*20)
-    print("searching for maps with N = {}" .format(N))
-    print("will use num_cities = ", num_cities_to_check)
-    print("first vs tenth city probability difference threshold: " .format(first_tenth_city_prob_diff_treshold))
-    print("resource probability threshold: ", resource_prob_diff_treshold)
-    print("-"*20)
+    if output:
+        print("-"*20)
+        print("searching for maps with N = {}" .format(N))
+        print("will use num_cities = ", num_cities_to_check)
+        print("first vs tenth city probability difference threshold: " .format(first_tenth_city_prob_diff_treshold))
+        print("resource probability threshold: ", resource_prob_diff_treshold)
+        print("-"*20)
     #todo lopp through and filter out maps that pass some test
 
     counter = 0
