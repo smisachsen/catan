@@ -15,6 +15,10 @@ class Map:
 
             print("pos: {}, dval: {}, res: {}" .format(pos, dval, res))
 
+    def __lt__(self, other, city_idx = 10):
+        return self.city_probability_ranking[city_idx].probability < \
+            other.city_probability_ranking[city_idx].probability
+
     def info(self):
         city_probs = [round(c.probability, 2) for c in self.city_probability_ranking[0:10]]
         print("city_probs: ", city_probs)
@@ -36,12 +40,9 @@ class Map:
             else:
                 resource_probabilities[res] = prob
 
+        del resource_probabilities["gold"]
         self.resource_probabilities = resource_probabilities
 
     def __set_city_probability_ranking(self):
         city_probability_ranking = sorted(self.cities, key = lambda x: x.probability, reverse = True)
-
-        for i in range(10):
-            c = city_probability_ranking[i]
-
         self.city_probability_ranking = city_probability_ranking

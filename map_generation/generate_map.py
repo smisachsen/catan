@@ -1,13 +1,14 @@
 import random
 import json
 
-from city import City
-from tile import Tile
-from map import Map
+from cls.city import City
+from cls.tile import Tile
+from cls.map import Map
 
 
-def get_random_map():
-    tiles = get_random_tiles()
+
+def get_random_map(map_layout_json):
+    tiles = get_random_tiles(map_layout_json)
     cities = get_random_cities(tiles)
 
     #make lists
@@ -15,10 +16,12 @@ def get_random_map():
     cities = list(cities.values())
 
     map = Map(cities, tiles)
+
     return map
 
-def get_random_cities(tiles):
-    with open("map_generation/info/cities.json", "r") as f:
+
+def get_random_cities(tiles, city_layout_json = "map_generation/info/cities.json"):
+    with open(city_layout_json, "r") as f:
         city_layout = json.load(f)
 
     cities = {}
@@ -30,41 +33,46 @@ def get_random_cities(tiles):
 
     return cities
 
-def get_random_tiles():
-    with open("map_generation/info/map_layout.json", "r") as f:
+def get_random_tiles(map_layout_json):
+    with open(map_layout_json, "r") as f:
         map_layout = json.load(f)
 
     #get lists of dice values, and resources
     dice_values = get_dice_values_list()
     resources = get_resource_list()
 
-    assert len(dice_values) == len(resources)
+
+
+    assert len(map_layout) == 44
+    assert len(resources) == 25
     assert len(dice_values) == 25
+
 
     #shuffle them to make a random map
     random.shuffle(dice_values)
     random.shuffle(resources)
 
     tiles = {}
-    idx = 0
+    gold_dice_values = [3, 11]
     for position, tile_type in map_layout.items():
         position = int(position)
+
         if tile_type == "random":
-            res = resources[idx]
-            dval = dice_values[idx]
-            idx += 1
+            res = resources.pop()
+            dval = int(dice_values.pop())
 
             t = Tile(position, res, dval)
             tiles[position] = t
 
         elif tile_type == "gold":
-            if position == 4:
-                dval = 3
-            elif position == 41:
-                dval = 11
+            dval = gold_dice_values.pop()
             res = "gold"
 
             t = Tile(position, res, dval)
+            tiles[position] = t
+
+        elif tile_type == "water":
+            t = Tile(position, resource = "water", dice_value = None)
             tiles[position] = t
 
 
@@ -78,7 +86,8 @@ def get_dice_values_list():
 
     dice_list = []
     for key in dice_dict:
-        dice_list += [int(key)]*dice_dict[key]
+        if key != "gold":
+            dice_list += [int(key)]*dice_dict[key]
 
     count = {i: dice_list.count(str(i)) for i in range(2, 13)}
 
@@ -90,7 +99,7 @@ def get_resource_list():
 
     tile_list = []
     for key in tiles_dict:
-        tile_list += [key]*tiles_dict[key]
-
+        if key != "gold":
+            tile_list += [key]*tiles_dict[key]
 
     return tile_list

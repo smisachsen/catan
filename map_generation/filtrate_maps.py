@@ -3,9 +3,9 @@ import numpy as np
 from .generate_map import get_random_map
 
 
-def search_for_maps(N = 10, output = True):
+def search_for_maps(N, map_layout_json, output = True):
     num_cities_to_check = 15 #num cities to calc mean
-    city_prob_mean_treshold = 0.29 #mean of the top cities must be higher than this
+    city_prob_mean_treshold = 0.3 #mean of the top cities must be higher than this
     first_tenth_city_prob_diff_treshold = 0.1 #max acceptable probability diff between first and tenth city
     resource_prob_diff_treshold = 0.1 #max acceptable probability diff between the most and least likely resource
 
@@ -13,14 +13,12 @@ def search_for_maps(N = 10, output = True):
         print("-"*20)
         print("searching for maps with N = {}" .format(N))
         print("will use num_cities = ", num_cities_to_check)
-        print("first vs tenth city probability difference threshold: " .format(first_tenth_city_prob_diff_treshold))
+        print("first vs tenth city probability difference threshold: {}" .format(first_tenth_city_prob_diff_treshold))
         print("resource probability threshold: ", resource_prob_diff_treshold)
         print("-"*20)
-    #todo lopp through and filter out maps that pass some test
 
-    counter = 0
     for _ in range(N):
-        map = get_random_map()
+        map = get_random_map(map_layout_json)
 
         #test of cities
         top_cities = map.city_probability_ranking[0:num_cities_to_check]
@@ -41,7 +39,5 @@ def search_for_maps(N = 10, output = True):
         probs = sorted(probs)[1:]
 
         test3 = probs[-1] - probs[0] < resource_prob_diff_treshold
-
         if all([test1, test2, test3]):
             yield map
-            counter += 1
